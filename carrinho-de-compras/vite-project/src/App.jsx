@@ -34,6 +34,12 @@ function App() {
     localStorage.setItem("products" , JSON.stringify(cartItem) )
   }
 
+  const handleDeleteCart = (product) => {
+    toast.error(`${product.name} foi removido do carrinho com sucesso`)
+    setCartItem((prevItens) =>  prevItens.filter((item) => item.id !== product.id))
+    localStorage.removeItem("products" , JSON.stringify(cartItem))
+  }
+
   return (
     < BrowserRouter  >
    <nav>
@@ -42,8 +48,24 @@ function App() {
     </nav>
     <div className="container" >
       <Routes>
-        < Route path="/" element={<Catalogo onAddToCart={handleAddCart} />} />
-        < Route path="/cart" element={<Cart cartItems={cartItem}  onUpdateCart={handleUpdateCart} />} />
+        < Route 
+        path="/" 
+        element={<Catalogo onAddToCart={handleAddCart} 
+        />} />
+        < Route path="/cart" 
+        element={<Cart cartItems={cartItem}  
+        onUpdateCart={handleUpdateCart} 
+        onRemoveCart={handleDeleteCart} 
+        setCartItem={setCartItem}
+        onCheckout={() => {
+            if (cartItem.length > 0){
+              toast.success("compra finalizada com sucesso")
+              setCartItem([])
+            } else {
+              toast.error("seu carrinho esta vazio")
+            }
+          }}
+        />} />
         < Route  path="/thanks" element={<Thanks/>} />
       </Routes>
     </div>
